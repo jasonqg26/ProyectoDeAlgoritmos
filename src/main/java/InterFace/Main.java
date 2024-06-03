@@ -1,6 +1,7 @@
 package InterFace;
 
 import javafx.application.Application;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
@@ -13,9 +14,9 @@ public class Main extends Application {
        Calculadora calculadora = new Calculadora();
 
 
-
+        stage.getIcons().add(new Image("logoCalculadora.png"));
         stage.setTitle("Calculadora");
-        stage.initStyle(StageStyle.UTILITY);
+        stage.initStyle(StageStyle.DECORATED);
         stage.setScene(calculadora.crearInterfaz());
         stage.show();
         stage.centerOnScreen();
