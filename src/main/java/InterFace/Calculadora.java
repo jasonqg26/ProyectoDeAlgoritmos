@@ -47,10 +47,10 @@ public class Calculadora {
 
         // Agrega los contenedores y la cuadrícula de botones al contenedor principal
         contenedorPrincipal.getChildren().addAll(expresionHBox,resultadoHBox ,Botones(expresionLabel,resultadoLabel));
-        return new Scene(contenedorPrincipal, 400, 600);
+        return new Scene(contenedorPrincipal, 300, 430);
     }
 
-    public GridPane Botones(Label exprecion, Label resultado){
+    public GridPane Botones(Label expresion, Label resultado){
         //Lo que mostrara cada boton
         String[] etiquetasBotones = {"AC","⬅","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",",","=","+"};
 
@@ -65,7 +65,7 @@ public class Calculadora {
             btn.setMinSize(70, 70);// Tamaño mínimo de los botones
             btn.getProperties().put("tipo",etiquetasBotones[i]);//Guarda como propiedad de cada botton el elemto que representa
             gridBotones.add(btn, i % 4,  i / 4); // Coloca etiquetas Botones en la cuadrícula
-            btn.setOnAction(actionEvent -> manejarEventoBoton(btn, exprecion, resultado));//Maneja el evento del boton
+            btn.setOnAction(actionEvent -> manejarEventoBoton(btn, expresion, resultado));//Maneja el evento del boton
         }
 
         return gridBotones;
@@ -86,11 +86,11 @@ public class Calculadora {
         setHayUnOperador(true);// Reinicia el estado
     }
 
-    public void borrarUltimoCaracter(Label exprecion){
-        exprecion.setText(exprecion.getText().substring(0,exprecion.getText().length() -1)); // Obtiene el texto actual de la expresión
+    public void borrarUltimoCaracter(Label expresion){
+        expresion.setText(expresion.getText().substring(0,expresion.getText().length() -1)); // Obtiene el texto actual de la expresión
 
-        String ultimoElemento = obtenerUltimoCaracter(exprecion.getText());
-        if ( ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
+        String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
+        if (ultimoElemento.isEmpty() || ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
             setHayUnOperador(true);
         }
         else {
@@ -98,26 +98,31 @@ public class Calculadora {
         }
     }
     public void mostrarResultado(Label expresion, Label resultado) {
-        System.out.println(expresion.getText());
+        String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
+        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
+            System.out.println("Expresión inválida");
+        }else {
+            System.out.println(expresion.getText());
+        }
         resultado.setText("Función no disponible");
     }
 
-    public void agregarCaracter(Button btn, Label exprecion){
+    public void agregarCaracter(Button btn, Label expresion){
         String tipoBoton = btn.getProperties().get("tipo").toString();// Obtiene la etiqueta del botón
         if (getHayUnOperador()){
             // Si el botón no es un operador
             if ( !(tipoBoton.equals("/") || tipoBoton.equals("*") || tipoBoton.equals("+") ||tipoBoton.equals("-"))){
-                exprecion.setText(exprecion.getText() + btn.getProperties().get("tipo"));// Agrega el carácter a la expresión
+                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));// Agrega el carácter a la expresión
                 setHayUnOperador(false);
             }
         }
         else{
             if ( tipoBoton.equals("/") || tipoBoton.equals("*") || tipoBoton.equals("+") ||tipoBoton.equals("-")){
-                exprecion.setText(exprecion.getText() + btn.getProperties().get("tipo"));
+                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));
                 setHayUnOperador(true);
             }
             else {
-                exprecion.setText(exprecion.getText() + btn.getProperties().get("tipo"));
+                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));
                 setHayUnOperador(false);
             }
         }
