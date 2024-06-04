@@ -7,6 +7,8 @@ import javafx.stage.StageStyle;
 
 import java.io.IOException;
 
+// Autores: Alexis Fabián Quesada Cordero C36202 y Jason Quesada Gómez C36213
+
 public class Main extends Application {
     @Override
     public void start(Stage stage) throws IOException {
