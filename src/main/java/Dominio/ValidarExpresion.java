@@ -2,7 +2,7 @@ package Dominio;
 
 import java.util.Stack;
 
-public class ValidarExprecion {
+public class ValidarExpresion {
 
     public  boolean validarParentesis(String expresion) {
         boolean correcta = true;

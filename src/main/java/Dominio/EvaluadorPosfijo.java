@@ -10,10 +10,10 @@ public class EvaluadorPosfijo {
         Stack<Character> pila = new Stack<>();
         for (int i = 0; i < expresion.length(); i++){
             char actual = expresion.charAt(i);
-            if (!esOperadorOhParentesis(actual)){
+            if (!esOperadorOParentesis(actual)){
                 exprecionResultante.append(actual);
             }
-            else if (esUnParentesis(actual)){
+            else if (esParentesis(actual)){
                 if (parentesisDeCierre(actual)){
                     while (pila.peek() != '('){
                         exprecionResultante.append(pila.pop());
@@ -51,11 +51,11 @@ public class EvaluadorPosfijo {
 
     }
 
-    private  boolean esOperadorOhParentesis(char token) {
+    private  boolean esOperadorOParentesis(char token) {
         return token == '+' || token == '-' || token == '*' || token == '/' || token == ')' || token == '(';
     }
 
-    public boolean esUnParentesis(char token){
+    public boolean esParentesis(char token){
         return token == ')' || token == '(';
     }
 
@@ -73,4 +73,47 @@ public class EvaluadorPosfijo {
         }
 
     }
+
+    public double calcularPosfija(String[] expresionPosfija) {
+        Stack<Double> operandos = new Stack<>();
+
+        for (int i = 0; i < expresionPosfija.length; i++) {
+            String caracter = expresionPosfija[i];
+
+            if (caracter.equals("/") || caracter.equals("*") || caracter.equals("+") ||caracter.equals("-")) {
+                // Si es un operador, aplicamos la operación correspondiente
+                double operando2 = operandos.pop();
+                double operando1 = operandos.pop();
+                double resultado = calculo(caracter, operando1, operando2);
+                operandos.push(resultado);
+
+            } else {
+                /// Si es un número, lo convertimos a double y lo agregamos a la pila
+                operandos.push(Double.parseDouble(caracter));
+            }
+        }
+
+        return operandos.pop();
+    }
+
+
+
+    private static double calculo (String operador, double operando1, double operando2) {
+        if (operador.equals("+")) {
+            return operando1 + operando2;
+        } else if (operador.equals("-")) {
+            return operando1 - operando2;
+        } else if (operador.equals("*")) {
+            return operando1 * operando2;
+        } else if (operador.equals("/")) {
+            if (operando2 == 0) {
+                throw new ArithmeticException("Error, no se puede dividir entre 0");
+            }
+            return operando1 / operando2;
+        } else {
+            throw new IllegalArgumentException("Operador desconocido: " + operador);
+        }
+    }
+
+
 }
