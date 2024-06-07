@@ -105,7 +105,7 @@ public class EvaluadorPosfijo {
 
 
 
-    public double calcularPosfijaQ(String[] expresionPosfija) {
+    public double calcularPosfija(String[] expresionPosfija) {
         Stack<Double> operandos = new Stack<>();
 
         for (int i = 0; i < expresionPosfija.length; i++) {

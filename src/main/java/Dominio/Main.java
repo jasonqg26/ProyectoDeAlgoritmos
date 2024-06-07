@@ -8,12 +8,9 @@ public class Main {
     public static void main(String[] args) {
 
         EvaluadorPosfijo evaluadorPosfijo = new EvaluadorPosfijo();
-        //System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("((33+(7-2)*(4/(2+1)))-((5*2)-(8/2)))")));
-//"((33+(7-2)*(4/(23+1)))-((5*2)-(87/2)))"
-        //String[] operacion = {"5","2","/"};
-        //(4/(23+1))-(5*2)
 
-        String [] arreglo = evaluadorPosfijo.convertirAExpresionPosfija("(8+2)/4*3");
-        System.out.println(evaluadorPosfijo.calcularPosfijaQ(arreglo));
+        System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
+
+        System.out.println(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
     }
 }
