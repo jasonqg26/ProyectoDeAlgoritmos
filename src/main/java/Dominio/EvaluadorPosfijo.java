@@ -5,6 +5,7 @@ import java.util.Stack;
 public class EvaluadorPosfijo {
 
     public String[] convertirAExpresionPosfija(String expresion) {
+
         StringBuilder expresionResultante = new StringBuilder();
         Stack<Character> pila = new Stack<>();
         StringBuilder numero = new StringBuilder();
