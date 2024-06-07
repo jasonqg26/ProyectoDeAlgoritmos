@@ -4,51 +4,48 @@ import java.util.Stack;
 
 public class EvaluadorPosfijo {
 
-    public  StringBuilder convertirAExpresionPosfija(String expresion) {
-
-        StringBuilder exprecionResultante = new StringBuilder();
+    public String[] convertirAExpresionPosfija(String expresion) {
+        StringBuilder expresionResultante = new StringBuilder();
         Stack<Character> pila = new Stack<>();
-        for (int i = 0; i < expresion.length(); i++){
+        StringBuilder numero = new StringBuilder();
+
+        for (int i = 0; i < expresion.length(); i++) {
             char actual = expresion.charAt(i);
-            if (!esOperadorOParentesis(actual)){
-                exprecionResultante.append(actual);
-            }
-            else if (esParentesis(actual)){
-                if (parentesisDeCierre(actual)){
-                    while (pila.peek() != '('){
-                        exprecionResultante.append(pila.pop());
-                    }
-                    pila.pop();
+
+            if (Character.isDigit(actual)) {
+                numero.append(actual); // Acumular dígitos de números
+            } else {
+                if (numero.length() > 0) {
+                    expresionResultante.append(numero.toString()).append(" ");
+                    numero.setLength(0); // Limpiar acumulador de números
                 }
-                else{
-                    pila.push(actual);
-                }
-            }
-            else  {
-                if (pila.isEmpty()){
-                    pila.push(actual);
-                }
-                else {
-                    if (obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
-                        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
-                            exprecionResultante.append(pila.pop());
+                if (esOperadorOParentesis(actual)) {
+                    if (actual == '(') {
+                        pila.push(actual);
+                    } else if (actual == ')') {
+                        while (!pila.isEmpty() && pila.peek() != '(') {
+                            expresionResultante.append(pila.pop()).append(" ");
+                        }
+                        pila.pop(); // Eliminar el '(' de la pila
+                    } else {
+                        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)) {
+                            expresionResultante.append(pila.pop()).append(" ");
                         }
                         pila.push(actual);
                     }
-                    else {
-                        pila.push(actual);
-                    }
                 }
             }
         }
 
-        while (!pila.isEmpty()){
-            exprecionResultante.append(pila.pop());
+        if (numero.length() > 0) {
+            expresionResultante.append(numero.toString()).append(" ");
         }
 
-        return exprecionResultante;
+        while (!pila.isEmpty()) {
+            expresionResultante.append(pila.pop()).append(" ");
+        }
 
-
+        return expresionResultante.toString().trim().split("\\s+");
     }
 
     private  boolean esOperadorOParentesis(char token) {
