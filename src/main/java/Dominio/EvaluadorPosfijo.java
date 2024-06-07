@@ -1,52 +1,82 @@
 package Dominio;
 
+import java.util.ArrayList;
 import java.util.Stack;
 
 public class EvaluadorPosfijo {
 
+
+
     public String[] convertirAExpresionPosfija(String expresion) {
+        //Convierte a una exprecion posfija
 
-        StringBuilder expresionResultante = new StringBuilder();
         Stack<Character> pila = new Stack<>();
-        StringBuilder numero = new StringBuilder();
+        ArrayList<String> exprecionResultante = new ArrayList<>();
 
-        for (int i = 0; i < expresion.length(); i++) {
+
+        String almacen = "";
+
+        for (int i = 0; i < expresion.length(); i++){
             char actual = expresion.charAt(i);
+            if (esOperadorOParentesis(actual) && !almacen.isEmpty()){
+                exprecionResultante.add(almacen);
+                almacen = "";
+            }
 
-            if (Character.isDigit(actual)) {
-                numero.append(actual); // Acumular dígitos de números
-            } else {
-                if (numero.length() > 0) {
-                    expresionResultante.append(numero.toString()).append(" ");
-                    numero.setLength(0); // Limpiar acumulador de números
+            if (!esOperadorOParentesis(actual)){
+                almacen += actual;
+            }
+            else if (esParentesis(actual)){
+                if (parentesisDeCierre(actual)){
+                    while (pila.peek() != '('){
+                        exprecionResultante.add(String.valueOf(pila.pop()));
+                    }
+                    pila.pop();
                 }
-                if (esOperadorOParentesis(actual)) {
-                    if (actual == '(') {
+                else{
+                    pila.push(actual);
+                }
+            }
+            else  {
+                if (!almacen.isEmpty()){
+                    exprecionResultante.add(almacen);
+                    almacen = "";
+                }
+
+                if (pila.isEmpty()){
+                    pila.push(actual);
+                }
+                else {
+                    if (obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
+                        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
+                            exprecionResultante.add(String.valueOf(pila.pop()));
+                        }
                         pila.push(actual);
-                    } else if (actual == ')') {
-                        while (!pila.isEmpty() && pila.peek() != '(') {
-                            expresionResultante.append(pila.pop()).append(" ");
-                        }
-                        pila.pop(); // Eliminar el '(' de la pila
-                    } else {
-                        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)) {
-                            expresionResultante.append(pila.pop()).append(" ");
-                        }
+                    }
+                    else {
                         pila.push(actual);
                     }
                 }
             }
+            if (i+1 == expresion.length() && !almacen.isEmpty()){
+                exprecionResultante.add(almacen);
+                almacen = "";
+            }
+
         }
 
-        if (numero.length() > 0) {
-            expresionResultante.append(numero.toString()).append(" ");
+
+
+        while (!pila.isEmpty()){
+            exprecionResultante.add(String.valueOf(pila.pop()));
         }
 
-        while (!pila.isEmpty()) {
-            expresionResultante.append(pila.pop()).append(" ");
-        }
+        String [] arreglo = exprecionResultante.toArray(new String[0]);
 
-        return expresionResultante.toString().trim().split("\\s+");
+
+        return arreglo;
+
+
     }
 
     private  boolean esOperadorOParentesis(char token) {
@@ -72,7 +102,10 @@ public class EvaluadorPosfijo {
 
     }
 
-    public double calcularPosfija(String[] expresionPosfija) {
+
+
+
+    public double calcularPosfijaQ(String[] expresionPosfija) {
         Stack<Double> operandos = new Stack<>();
 
         for (int i = 0; i < expresionPosfija.length; i++) {
