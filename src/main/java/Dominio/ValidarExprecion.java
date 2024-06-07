@@ -2,9 +2,9 @@ package Dominio;
 
 import java.util.Stack;
 
-public class DominioCalculadora {
+public class ValidarExprecion {
 
-    public static boolean validarParentesis(String expresion) {
+    public  boolean validarParentesis(String expresion) {
         boolean correcta = true;
 
         Stack<Character> datos = new Stack<>();
@@ -36,10 +36,5 @@ public class DominioCalculadora {
 
         return correcta;
     }
-
 }
-
-
-
-
 
