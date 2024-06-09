@@ -1,4 +1,6 @@
 package InterFace;
+import Dominio.EvaluadorPosfijo;
+import Dominio.ValidarExpresion;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
@@ -9,6 +11,9 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 
 public class Calculadora {
+
+    ValidarExpresion validarExpresion = new ValidarExpresion();
+    EvaluadorPosfijo evaluadorPosfijo = new EvaluadorPosfijo();
     private boolean hayUnOperador = true;
 
     public boolean getHayUnOperador() {
@@ -47,12 +52,12 @@ public class Calculadora {
 
         // Agrega los contenedores y la cuadrícula de botones al contenedor principal
         contenedorPrincipal.getChildren().addAll(expresionHBox,resultadoHBox ,Botones(expresionLabel,resultadoLabel));
-        return new Scene(contenedorPrincipal, 300, 430);
+        return new Scene(contenedorPrincipal, 300, 470);
     }
 
     public GridPane Botones(Label expresion, Label resultado){
         //Lo que mostrara cada boton
-        String[] etiquetasBotones = {"AC","⬅","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",",","=","+"};
+        String[] etiquetasBotones = {"AC","⬅","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"};
 
         GridPane gridBotones = new GridPane();
         gridBotones.setAlignment(Pos.CENTER);
@@ -99,12 +104,12 @@ public class Calculadora {
     }
     public void mostrarResultado(Label expresion, Label resultado) {
         String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
-        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
-            System.out.println("Expresión inválida");
+        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")|| ultimoElemento.equals(",") || validarExpresion.validarParentesis(expresion.getText()) == false){
+            resultado.setText("Expresión inválida");
         }else {
-            System.out.println(expresion.getText());
+            resultado.setText(String.valueOf(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija(expresion.getText().toString()))));
         }
-        resultado.setText("Función no disponible");
+
     }
 
     public void agregarCaracter(Button btn, Label expresion){

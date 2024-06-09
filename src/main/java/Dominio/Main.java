@@ -10,10 +10,10 @@ public class Main {
         EvaluadorPosfijo evaluadorPosfijo = new EvaluadorPosfijo();
         ValidarExpresion validarExpresion = new ValidarExpresion();
 
-        System.out.println(validarExpresion.validarParentesis("(8000+2)/46*3"));
+        //ystem.out.println(validarExpresion.validarParentesis("(8000+2)/46*3"));
         //System.out.println(validarExpresion.validarParentesis("(8000+2)/46*3)")); //false
 
-        System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
+        //System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
 
         System.out.println(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
     }
