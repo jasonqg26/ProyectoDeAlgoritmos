@@ -1,73 +1,106 @@
 package InterFace;
 import Dominio.EvaluadorPosfijo;
 import Dominio.ValidarExpresion;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.*;
+import javafx.scene.text.Font;
+
+import java.io.File;
 
 public class Calculadora {
-
+    // Instancias de las clases que validan y evalúan expresiones
     ValidarExpresion validarExpresion = new ValidarExpresion();
     EvaluadorPosfijo evaluadorPosfijo = new EvaluadorPosfijo();
     private boolean hayUnOperador = true;
 
+    // obtiene el estado del operador
     public boolean getHayUnOperador() {
         return hayUnOperador;
     }
-
+    // establece el estado del operador
     public void setHayUnOperador(boolean hayUnOperador) {
         this.hayUnOperador = hayUnOperador;
     }
 
 
-    public Scene crearInterfaz() { // Método para crear la interfaz gráfica de la calculadora
-    //------------------------------------------------------------------------------------------------------------------
-        VBox contenedorPrincipal = new VBox(15); // Contenedor Padre
-        contenedorPrincipal.setAlignment(Pos.CENTER);
-    //------------------------------------------------------------------------------------------------------------------
-        HBox expresionHBox = new HBox();//Etiqueta donde se vera las expresiones
-        expresionHBox.setAlignment(Pos.CENTER_LEFT);
+    public Scene crearInterfaz() { // Crea la interfaz gráfica de la calculadora
 
-        Label expresionLabel = new Label();
-        expresionLabel.setMaxHeight(5);
-        expresionLabel.setAlignment(Pos.CENTER_LEFT);
-        expresionLabel.setPadding(new Insets(0, 0, 0, 10));
-    //------------------------------------------------------------------------------------------------------------------
-        HBox resultadoHBox = new HBox();//Etiqueta donde se vera los resultados
-        resultadoHBox .setAlignment(Pos.CENTER_RIGHT);
+        // Crea el contenedor principal de la interfaz
+        VBox contenedorPrincipal = crearContenedorPrincipal();
+        // Crea y configura el contenedor para la etiqueta de la expresión
+        HBox expresionHBox = crearContenedorExpresion();
+        HBox resultadoHBox = crearContenedorResultado();
 
-        Label resultadoLabel = new Label();
-        resultadoLabel.setMaxHeight(5);
-        resultadoLabel.setAlignment(Pos.CENTER_RIGHT);
-        resultadoLabel.setPadding(new Insets(0, 10, 0, 0));
-    //------------------------------------------------------------------------------------------------------------------
-        // Agrega los Labels a sus respectivos contenedores
+        Label expresionLabel = crearLabel(Pos.CENTER_LEFT, new Insets(0, 0, 0, 16));
+        Label resultadoLabel = crearLabel(Pos.CENTER_RIGHT, new Insets(0, 20, 0, 0));
+        // Añade las etiquetas a sus contenedores respectivos
         expresionHBox.getChildren().add(expresionLabel);
-        resultadoHBox .getChildren().add(resultadoLabel);
+        resultadoHBox.getChildren().add(resultadoLabel);
+        // Añade los contenedores y los botones al contenedor principal
+        contenedorPrincipal.getChildren().addAll(expresionHBox, resultadoHBox, crearBotones(expresionLabel, resultadoLabel));
 
-        // Agrega los contenedores y la cuadrícula de botones al contenedor principal
-        contenedorPrincipal.getChildren().addAll(expresionHBox,resultadoHBox ,Botones(expresionLabel,resultadoLabel));
-        return new Scene(contenedorPrincipal, 300, 470);
+        return new Scene(contenedorPrincipal, 340, 570);
     }
 
-    public GridPane Botones(Label expresion, Label resultado){
-        //Lo que mostrara cada boton
+    public VBox crearContenedorPrincipal() {//Crea el contenedor principal
+        VBox contenedorPrincipal = new VBox(15);
+
+        Image img_fondo = new Image("Background.png");
+        BackgroundImage bImg = new BackgroundImage(img_fondo,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundRepeat.NO_REPEAT,
+                BackgroundPosition.DEFAULT,
+                new BackgroundSize(340, 570, true, true, true, true));
+        Background bGround = new Background(bImg);
+        contenedorPrincipal.setBackground(bGround);
+        contenedorPrincipal.setAlignment(Pos.CENTER);
+        return contenedorPrincipal;
+    }
+
+
+    public HBox crearContenedorExpresion() { // Crea el contenedor de la expresión
+        HBox expresionHBox = new HBox();
+        expresionHBox.setAlignment(Pos.CENTER_LEFT);
+        return expresionHBox;
+    }
+
+    public HBox crearContenedorResultado() {// Crea el contenedor del resultado
+        HBox resultadoHBox = new HBox();
+        resultadoHBox.setAlignment(Pos.CENTER_RIGHT);
+        return resultadoHBox;
+    }
+
+
+    public Label crearLabel(Pos alignment, Insets padding) { // Método para crear una etiqueta configurada
+        Label label = new Label();
+        label.setAlignment(alignment);
+        label.setPadding(padding);
+        label.setStyle("-fx-text-fill: #FFFFFF;");
+        label.setFont(Font.loadFont(new File("src/main/resources/PixelOperator.ttf").toURI().toString(), 35));
+        return label;
+    }
+
+    public GridPane crearBotones(Label expresion, Label resultado){
+        // Método para crear y configurar los botones de la calculadora
+        // Etiquetas de los botones
         String[] etiquetasBotones = {"AC","⬅","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"};
 
+
+        // Configuración del GridPane para los botones
         GridPane gridBotones = new GridPane();
         gridBotones.setAlignment(Pos.CENTER);
         gridBotones.setVgap(2);
         gridBotones.setHgap(2);
 
-        //Crea los botones
+        // Crea los botones y les asigna eventos
         for (int i = 0; i < 20; i++) {
             Button btn = new Button(etiquetasBotones[i]);
-            btn.setMinSize(70, 70);// Tamaño mínimo de los botones
+            btn.setMinSize(80, 80);// Tamaño mínimo de los botones
             btn.getProperties().put("tipo",etiquetasBotones[i]);//Guarda como propiedad de cada botton el elemto que representa
             gridBotones.add(btn, i % 4,  i / 4); // Coloca etiquetas Botones en la cuadrícula
             btn.setOnAction(actionEvent -> manejarEventoBoton(btn, expresion, resultado));//Maneja el evento del boton
@@ -80,66 +113,89 @@ public class Calculadora {
         // Método para manejar el evento de clic en los botones
 
         switch (btn.getProperties().get("tipo").toString()) {
-            case "AC" -> resetearExpresion(expresion);
+            case "AC" -> resetearExpresion(expresion,resultado);
             case "⬅" -> borrarUltimoCaracter(expresion);
             case "=" -> mostrarResultado(expresion, resultado);
             default -> agregarCaracter(btn,expresion);
         }
     }
-    public void resetearExpresion(Label expresion) {
+
+
+    public void resetearExpresion(Label expresion,Label resultado) { // Resetear la expresión y el resultado
         expresion.setText("");
+        resultado.setText("");
         setHayUnOperador(true);// Reinicia el estado
     }
 
-    public void borrarUltimoCaracter(Label expresion){
+    public void borrarUltimoCaracter(Label expresion){// Método para borrar el último carácter de la expresión
 
         if (!expresion.getText().isEmpty()) {
             expresion.setText(expresion.getText().substring(0, expresion.getText().length() - 1)); // Obtiene el texto actual de la expresión
         }
-        String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
-        if (ultimoElemento.isEmpty() || ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
-            setHayUnOperador(true);
+        setHayUnOperador(esUltimoCaracterOperador(expresion.getText()));
+
+    }
+
+    public boolean esUltimoCaracterOperador(String texto) {
+        // Método para verificar si el último carácter es un operador
+        boolean esCaracter;
+        if (!texto.isEmpty()) {
+            char ultimoCaracter = texto.charAt(texto.length() - 1);
+            esCaracter = "/-*+".indexOf(ultimoCaracter) != -1;
         }
-        else {
-            setHayUnOperador(false);
-        }
+        else{esCaracter = true;}
+
+        return esCaracter;
+
     }
     public void mostrarResultado(Label expresion, Label resultado) {
-        String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
-        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")|| ultimoElemento.equals(",") || validarExpresion.validarParentesis(expresion.getText()) == false || evaluadorPosfijo.isDividoEntre0()){
+        // Método para mostrar el resultado de la expresión
+        String textoExpresion = expresion.getText();
+        String ultimoElemento = obtenerUltimoCaracter(textoExpresion);
+
+        if(esOperador(ultimoElemento) || esExpresionInvalida(textoExpresion) ){
             resultado.setText("Expresión inválida");
         }else {
-            resultado.setText(String.valueOf(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija(expresion.getText().toString()))));
+            resultado.setText(String.valueOf(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija(expresion.getText()))));
         }
+
 
     }
 
+    public boolean esExpresionInvalida(String textoExpresion) {
+        // Método para verificar si la expresión es inválida
+        return textoExpresion.equals("0/0") || !validarExpresion.validarParentesis(textoExpresion);
+    }
+
+
+
+    //Agrega un carácter a la expresión
     public void agregarCaracter(Button btn, Label expresion){
         String tipoBoton = btn.getProperties().get("tipo").toString();// Obtiene la etiqueta del botón
+
         if (getHayUnOperador()){
             // Si el botón no es un operador
-            if ( !(tipoBoton.equals("/") || tipoBoton.equals("*") || tipoBoton.equals("+") ||tipoBoton.equals("-"))){
-                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));// Agrega el carácter a la expresión
+            if ( !esOperador(tipoBoton)){
+                expresion.setText(expresion.getText() + tipoBoton);// Agrega el carácter a la expresión
                 setHayUnOperador(false);
             }
         }
         else{
-            if ( tipoBoton.equals("/") || tipoBoton.equals("*") || tipoBoton.equals("+") ||tipoBoton.equals("-")){
-                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));
-                setHayUnOperador(true);
-            }
-            else {
-                expresion.setText(expresion.getText() + btn.getProperties().get("tipo"));
-                setHayUnOperador(false);
-            }
+            expresion.setText(expresion.getText() + tipoBoton);
+            setHayUnOperador(esOperador(tipoBoton));
+
         }
+    }
+
+    public boolean esOperador(String tipoBoton) {
+        return "/-*+".contains(tipoBoton);
     }
 
     public String obtenerUltimoCaracter(String texto){
         if (texto.isEmpty()){
             return texto;
         }
-        else return texto.substring(texto.length() -1, texto.length());
+        else return texto.substring(texto.length() -1);
 
     }
 
