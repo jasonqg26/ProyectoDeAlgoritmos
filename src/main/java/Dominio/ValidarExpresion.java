@@ -13,7 +13,12 @@ public class ValidarExpresion {
         while (correcta && i < expresion.length()) {
             char actual = expresion.charAt(i);
             if (actual == '(') {
-                datos.push(actual);
+                //valida la existencia de () 0 (*-+/)
+                if ( (expresion.charAt(i + 1) == ')' || esOperador(expresion.charAt(i + 1)))) {
+                    correcta = false;
+                } else {
+                    datos.push(actual);
+                }
             } else if (actual == ')') {
                 if (!datos.isEmpty()) {
                     char top = datos.peek();
@@ -36,5 +41,13 @@ public class ValidarExpresion {
 
         return correcta;
     }
+
+
+
+    private boolean esOperador(char c) {
+        // Verifica si el carácter es un operador
+        return c == '+' || c == '-' || c == '*' || c == '/';
+    }
 }
+
 
