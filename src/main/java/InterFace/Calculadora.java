@@ -83,7 +83,7 @@ public class Calculadora {
         label.setAlignment(alignment);
         label.setPadding(padding);
         label.setStyle("-fx-text-fill: #FFFFFF;");
-        label.setFont(Font.loadFont(new File("src/main/resources/PixelOperator.ttf").toURI().toString(), 35));
+        label.setFont(Font.loadFont(getClass().getResourceAsStream("/PixelOperator.ttf"), 35));
         return label;
     }
 
@@ -107,7 +107,7 @@ public class Calculadora {
                     "-fx-background-radius: 30px;"+ "-fx-border-color: black; " +
                     "-fx-border-width: 1px; " +
                     "-fx-border-radius: 28px;");
-            btn.setFont(Font.loadFont(new File("src/main/resources/PixelOperator.ttf").toURI().toString(), 35));
+            btn.setFont(Font.loadFont(getClass().getResourceAsStream("/PixelOperator.ttf"), 35));
             btn.getProperties().put("tipo",etiquetasBotones[i]);//Guarda como propiedad de cada botton el elemto que representa
             gridBotones.add(btn, i % 4,  i / 4); // Coloca etiquetas Botones en la cuadrícula
             btn.setOnAction(actionEvent -> manejarEventoBoton(btn, expresion, resultado));//Maneja el evento del boton
