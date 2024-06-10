@@ -8,97 +8,98 @@ public class EvaluadorPosfijo {
 
 
     public String[] convertirAExpresionPosfija(String expresion) {
+        //Convierte a una exprecion posfija
+
         Stack<Character> pila = new Stack<>();
-        ArrayList<String> expresionResultante = new ArrayList<>();
-        StringBuilder almacen = new StringBuilder();
+        ArrayList<String> exprecionResultante = new ArrayList<>();
 
-        for (int i = 0; i < expresion.length(); i++) {
+
+        String almacen = "";
+
+        for (int i = 0; i < expresion.length(); i++){
             char actual = expresion.charAt(i);
+            if (esOperadorOParentesis(actual) && !almacen.isEmpty()){
+                exprecionResultante.add(almacen);
+                almacen = "";
+            }
 
+            if (!esOperadorOParentesis(actual)){
+                almacen += actual;
+            }
+            else if (esParentesis(actual)){
+                if (parentesisDeCierre(actual)){
+                    while (pila.peek() != '('){
+                        exprecionResultante.add(String.valueOf(pila.pop()));
+                    }
+                    pila.pop();
+                }
+                else{
+                    pila.push(actual);
+                }
+            }
+            else  {
+                if (!almacen.isEmpty()){
+                    exprecionResultante.add(almacen);
+                    almacen = "";
+                }
 
-
-            if (esOperadorOParentesis(actual) && !almacen.isEmpty()) {
-                if (esParentesis(actual) && !esParentesisDeCierre(actual)){
-                    manejarOperador('*',pila,expresionResultante,almacen);
+                if (pila.isEmpty()){
+                    pila.push(actual);
                 }
                 else {
-                    expresionResultante.add(almacen.toString());
-                    almacen.setLength(0);
+                    if (obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
+                        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)){
+                            exprecionResultante.add(String.valueOf(pila.pop()));
+                        }
+                        pila.push(actual);
+                    }
+                    else {
+                        pila.push(actual);
+                    }
                 }
             }
-
-            if (!esOperadorOParentesis(actual)) {
-                almacen.append(actual);
-            } else if (esParentesis(actual)) {
-                manejarParentesis(actual, pila, expresionResultante);
-            } else {
-                manejarOperador(actual, pila, expresionResultante, almacen);
-            }
-            if (esParentesisDeCierre(actual) && i + 1 < expresion.length() &&!esOperadorOParentesis(expresion.charAt(i + 1))){
-                manejarOperador('*',pila,expresionResultante,almacen);
+            if (i+1 == expresion.length() && !almacen.isEmpty()){
+                exprecionResultante.add(almacen);
+                almacen = "";
             }
 
-            //Si ya es el último for lo que tenga el almacén que se agregue;
-            if (i + 1 == expresion.length() && !almacen.isEmpty()) {
-                expresionResultante.add(almacen.toString());
-                almacen.setLength(0);
-            }
         }
 
-        while (!pila.isEmpty()) {
-            expresionResultante.add(String.valueOf(pila.pop()));
+
+
+        while (!pila.isEmpty()){
+            exprecionResultante.add(String.valueOf(pila.pop()));
         }
 
-        return expresionResultante.toArray(new String[0]);
+        String [] arreglo = exprecionResultante.toArray(new String[0]);
+
+
+        return arreglo;
+
+
     }
 
-    public void manejarParentesis(char actual, Stack<Character> pila, ArrayList<String> expresionResultante) {
-        //Si el parentesi es de cierre se saca los elementos hasta encontrar a la pareja del parentesi
-        if (esParentesisDeCierre(actual)) {
-            while (pila.peek() != '(') {
-                expresionResultante.add(String.valueOf(pila.pop()));
-            }
-            pila.pop();//elimina (
-        } else { //Si no es de cierre es (
+    public  boolean esOperadorOParentesis(char token) {
+        return token == '+' || token == '-' || token == '*' || token == '/' || token == ')' || token == '(';
+    }
 
-            pila.push(actual);
+    public boolean esParentesis(char token){
+        return token == ')' || token == '(';
+    }
+
+    public boolean parentesisDeCierre(char token){
+        return token == ')';
+    }
+
+    public int obtenerImportancia(char token){
+        switch (token) {
+            case '-': return  1;
+            case '+': return 2;
+            case '/': return 3;
+            case '*': return 4;
+            default: return -1;
         }
-    }
 
-    public void manejarOperador(char actual, Stack<Character> pila, ArrayList<String> expresionResultante, StringBuilder almacen) {
-        //Al encontrar un operador el almacén se agrega
-        if (!almacen.isEmpty()) {
-            expresionResultante.add(almacen.toString());
-            almacen.setLength(0);
-        }
-
-        //Si el que está en la pila tiene mayor importancia que el que entra sale
-        while (!pila.isEmpty() && obtenerImportancia(pila.peek()) >= obtenerImportancia(actual)) {
-            expresionResultante.add(String.valueOf(pila.pop()));
-        }
-        pila.push(actual);
-    }
-
-    public boolean esOperadorOParentesis(char elemento) {
-        return "+-*/()".indexOf(elemento) != -1;
-    }
-
-    public boolean esParentesis(char elemento) {
-        return elemento == '(' || elemento == ')';
-    }
-
-    public boolean esParentesisDeCierre(char elemento) {
-        return elemento == ')';
-    }
-
-    public int obtenerImportancia(char elemento) {
-        return switch (elemento) {
-            case '-'-> 1;
-            case '+'-> 2;
-            case '/'-> 3;
-            case '*'-> 4;
-            default -> -1;
-        };
     }
 
 
@@ -110,11 +111,12 @@ public class EvaluadorPosfijo {
 
         for (int i = 0; i < expresionPosfija.length; i++) {
             String caracter = expresionPosfija[i];
-            if (esOperador(caracter)) {
+
+            if (caracter.equals("/") || caracter.equals("*") || caracter.equals("+") ||caracter.equals("-")) {
                 // Si es un operador, aplicamos la operación correspondiente
                 double operando2 = operandos.pop();
                 double operando1 = operandos.pop();
-                double resultado = realizarCalculo(caracter, operando1, operando2);
+                double resultado = calculo(caracter, operando1, operando2);
                 operandos.push(resultado);
 
             } else {
@@ -126,22 +128,27 @@ public class EvaluadorPosfijo {
         return operandos.pop();
     }
 
-    public double realizarCalculo(String operador, double operando1, double operando2) {
-        double resultado;
-         switch (operador) {
-            case "+" -> resultado = operando1 + operando2;
-            case "-" -> resultado = operando1 - operando2;
-            case "*" -> resultado = operando1 * operando2;
-            case "/" -> resultado = operando1 / operando2;
-            default -> throw new IllegalArgumentException("Operador desconocido: " + operador);
+
+
+    public double calculo (String operador, double operando1, double operando2) {
+
+
+
+        if (operador.equals("+")) {
+            return operando1 + operando2;
+        } else if (operador.equals("-")) {
+            return operando1 - operando2;
+        } else if (operador.equals("*")) {
+            return operando1 * operando2;
+        } else if (operador.equals("/")) {
+            return operando1 / operando2;
+
+
+        } else {
+            throw new IllegalArgumentException("Operador desconocido: " + operador);
         }
 
-         return resultado;
-    }
 
-    public boolean esOperador(String caracter) {
-        return "+-*/".contains(caracter);
     }
-
 
 }
