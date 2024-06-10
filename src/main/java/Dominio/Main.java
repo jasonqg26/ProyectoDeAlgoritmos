@@ -14,7 +14,13 @@ public class Main {
         //System.out.println(validarExpresion.validarParentesis("(8000+2)/46*3)")); //false
 
         //System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
+        String[] r = evaluadorPosfijo.convertirAExpresionPosfija("(2)2");
+        for (int i = 0; i < r.length; i++){
+            System.out.println(r[i]);
+        }
+        System.out.println(evaluadorPosfijo.calcularPosfija(r));
 
-        System.out.println(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/0")));
+
+
     }
 }
