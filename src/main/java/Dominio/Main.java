@@ -15,6 +15,6 @@ public class Main {
 
         //System.out.println(Arrays.toString(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
 
-        System.out.println(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/46*3")));
+        System.out.println(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija("(8000+2)/0")));
     }
 }

@@ -79,7 +79,7 @@ public class EvaluadorPosfijo {
 
     }
 
-    private  boolean esOperadorOParentesis(char token) {
+    public  boolean esOperadorOParentesis(char token) {
         return token == '+' || token == '-' || token == '*' || token == '/' || token == ')' || token == '(';
     }
 
@@ -108,6 +108,7 @@ public class EvaluadorPosfijo {
     public double calcularPosfija(String[] expresionPosfija) {
         Stack<Double> operandos = new Stack<>();
 
+
         for (int i = 0; i < expresionPosfija.length; i++) {
             String caracter = expresionPosfija[i];
 
@@ -129,7 +130,10 @@ public class EvaluadorPosfijo {
 
 
 
-    private static double calculo (String operador, double operando1, double operando2) {
+    public double calculo (String operador, double operando1, double operando2) {
+
+
+
         if (operador.equals("+")) {
             return operando1 + operando2;
         } else if (operador.equals("-")) {
@@ -137,14 +141,14 @@ public class EvaluadorPosfijo {
         } else if (operador.equals("*")) {
             return operando1 * operando2;
         } else if (operador.equals("/")) {
-            if (operando2 == 0) {
-                throw new ArithmeticException("Error, no se puede dividir entre 0");
-            }
             return operando1 / operando2;
+
+
         } else {
             throw new IllegalArgumentException("Operador desconocido: " + operador);
         }
-    }
 
+
+    }
 
 }

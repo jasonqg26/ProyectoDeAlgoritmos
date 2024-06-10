@@ -36,7 +36,7 @@ public class Calculadora {
         Label expresionLabel = new Label();
         expresionLabel.setMaxHeight(5);
         expresionLabel.setAlignment(Pos.CENTER_LEFT);
-        expresionLabel.setPadding(new Insets(0, 0, 0, 59));
+        expresionLabel.setPadding(new Insets(0, 0, 0, 10));
     //------------------------------------------------------------------------------------------------------------------
         HBox resultadoHBox = new HBox();//Etiqueta donde se vera los resultados
         resultadoHBox .setAlignment(Pos.CENTER_RIGHT);
@@ -44,7 +44,7 @@ public class Calculadora {
         Label resultadoLabel = new Label();
         resultadoLabel.setMaxHeight(5);
         resultadoLabel.setAlignment(Pos.CENTER_RIGHT);
-        resultadoLabel.setPadding(new Insets(0, 59, 0, 0));
+        resultadoLabel.setPadding(new Insets(0, 10, 0, 0));
     //------------------------------------------------------------------------------------------------------------------
         // Agrega los Labels a sus respectivos contenedores
         expresionHBox.getChildren().add(expresionLabel);
@@ -92,8 +92,10 @@ public class Calculadora {
     }
 
     public void borrarUltimoCaracter(Label expresion){
-        expresion.setText(expresion.getText().substring(0,expresion.getText().length() -1)); // Obtiene el texto actual de la expresión
 
+        if (!expresion.getText().isEmpty()) {
+            expresion.setText(expresion.getText().substring(0, expresion.getText().length() - 1)); // Obtiene el texto actual de la expresión
+        }
         String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
         if (ultimoElemento.isEmpty() || ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")){
             setHayUnOperador(true);
@@ -104,7 +106,7 @@ public class Calculadora {
     }
     public void mostrarResultado(Label expresion, Label resultado) {
         String ultimoElemento = obtenerUltimoCaracter(expresion.getText());
-        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")|| ultimoElemento.equals(",") || validarExpresion.validarParentesis(expresion.getText()) == false){
+        if(ultimoElemento.equals("/") || ultimoElemento.equals("*") || ultimoElemento.equals("+") ||ultimoElemento.equals("-")|| ultimoElemento.equals(",") || validarExpresion.validarParentesis(expresion.getText()) == false || evaluadorPosfijo.isDividoEntre0()){
             resultado.setText("Expresión inválida");
         }else {
             resultado.setText(String.valueOf(evaluadorPosfijo.calcularPosfija(evaluadorPosfijo.convertirAExpresionPosfija(expresion.getText().toString()))));
