@@ -1,6 +1,7 @@
 package InterFace;
 import Dominio.EvaluadorPosfijo;
 import Dominio.ValidarExpresion;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
@@ -9,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.layout.*;
 import javafx.scene.text.Font;
+import javafx.util.Duration;
 
 import java.io.File;
 
@@ -88,19 +90,24 @@ public class Calculadora {
     public GridPane crearBotones(Label expresion, Label resultado){
         // Método para crear y configurar los botones de la calculadora
         // Etiquetas de los botones
-        String[] etiquetasBotones = {"AC","⬅","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"};
+        String[] etiquetasBotones = {"AC","<-","(",")","7","8","9","/","4","5","6","*","1","2","3","-","0",".","=","+"};
 
 
         // Configuración del GridPane para los botones
         GridPane gridBotones = new GridPane();
         gridBotones.setAlignment(Pos.CENTER);
-        gridBotones.setVgap(2);
-        gridBotones.setHgap(2);
+
 
         // Crea los botones y les asigna eventos
         for (int i = 0; i < 20; i++) {
             Button btn = new Button(etiquetasBotones[i]);
             btn.setMinSize(80, 80);// Tamaño mínimo de los botones
+            btn.setMaxSize(80, 80);
+            btn.setStyle(
+                    "-fx-background-radius: 30px;"+ "-fx-border-color: black; " +
+                    "-fx-border-width: 1px; " +
+                    "-fx-border-radius: 28px;");
+            btn.setFont(Font.loadFont(new File("src/main/resources/PixelOperator.ttf").toURI().toString(), 35));
             btn.getProperties().put("tipo",etiquetasBotones[i]);//Guarda como propiedad de cada botton el elemto que representa
             gridBotones.add(btn, i % 4,  i / 4); // Coloca etiquetas Botones en la cuadrícula
             btn.setOnAction(actionEvent -> manejarEventoBoton(btn, expresion, resultado));//Maneja el evento del boton
@@ -111,10 +118,25 @@ public class Calculadora {
 
     public void manejarEventoBoton(Button btn, Label expresion, Label resultado) {
         // Método para manejar el evento de clic en los botones
+        btn.setRotate(10);
+        btn.setStyle("-fx-background-color: #4e5454;"+ "-fx-background-radius: 30px;"+ "-fx-border-color: black; " +
+                "-fx-border-width: 1px; " +
+                "-fx-border-radius: 28px;");
+        PauseTransition pauseTransition = new PauseTransition(Duration.seconds(1));
+        pauseTransition.setOnFinished(actionEvent -> {
+            // Después del tiempo se vuelve a la imagen anterior
+            btn.setStyle("-fx-background-color: #ffffff;"+ "-fx-background-radius: 30px;"+ "-fx-border-color: black; " +
+                    "-fx-border-width: 1px; " +
+                    "-fx-border-radius: 28px;");
+            btn.setRotate(0);
+        }); // end de qué hacer después de los dos segundos
+        // Inicia el tiempo
 
+
+        pauseTransition.play();
         switch (btn.getProperties().get("tipo").toString()) {
             case "AC" -> resetearExpresion(expresion,resultado);
-            case "⬅" -> borrarUltimoCaracter(expresion);
+            case "<-" -> borrarUltimoCaracter(expresion,resultado);
             case "=" -> mostrarResultado(expresion, resultado);
             default -> agregarCaracter(btn,expresion);
         }
@@ -127,8 +149,10 @@ public class Calculadora {
         setHayUnOperador(true);// Reinicia el estado
     }
 
-    public void borrarUltimoCaracter(Label expresion){// Método para borrar el último carácter de la expresión
-
+    public void borrarUltimoCaracter(Label expresion,Label resultado){// Método para borrar el último carácter de la expresión
+        if (!resultado.getText().isEmpty()){
+            resultado.setText("");
+        }
         if (!expresion.getText().isEmpty()) {
             expresion.setText(expresion.getText().substring(0, expresion.getText().length() - 1)); // Obtiene el texto actual de la expresión
         }
